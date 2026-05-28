@@ -6,12 +6,7 @@ import {
   toggleReplyNotificationFn,
 } from "@/features/email/api/email.api";
 import { EMAIL_KEYS } from "@/features/email/queries";
-import { profile_notify_disabled_fuwari } from "@/paraglide/messages";
-import { profile_notify_enabled_fuwari } from "@/paraglide/messages";
-import { profile_notify_invalid_state } from "@/paraglide/messages";
-import { profile_notify_status_failed } from "@/paraglide/messages";
-import { profile_notify_status_loading } from "@/paraglide/messages";
-import { profile_notify_unavailable } from "@/paraglide/messages";
+import { m } from "@/paraglide/messages";
 
 export function useNotificationToggle(userId: string | undefined) {
   const queryClient = useQueryClient();
@@ -45,8 +40,8 @@ export function useNotificationToggle(userId: string | undefined) {
       });
       toast.success(
         enabled
-          ? profile_notify_enabled_fuwari()
-          : profile_notify_disabled_fuwari(),
+          ? m.profile_notify_enabled_fuwari()
+          : m.profile_notify_disabled_fuwari(),
       );
     },
   });
@@ -58,19 +53,19 @@ export function useNotificationToggle(userId: string | undefined) {
     isPending: mutation.isPending,
     toggle: () => {
       if (isLoading || isAvailabilityLoading) {
-        toast.message(profile_notify_status_loading());
+        toast.message(m.profile_notify_status_loading());
         return;
       }
       if (queryError || availabilityError) {
-        toast.error(profile_notify_status_failed());
+        toast.error(m.profile_notify_status_failed());
         return;
       }
       if (!availability?.emailEnabled) {
-        toast.message(profile_notify_unavailable());
+        toast.message(m.profile_notify_unavailable());
         return;
       }
       if (currentEnabled === undefined) {
-        toast.error(profile_notify_invalid_state());
+        toast.error(m.profile_notify_invalid_state());
         return;
       }
       mutation.mutate(!currentEnabled);

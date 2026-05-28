@@ -6,28 +6,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { AUTH_KEYS } from "@/features/auth/queries";
 import { authClient } from "@/lib/auth/auth.client";
-import { resetPasswordAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getResetPasswordAuthErrorMessage } from "@/lib/auth/auth-errors";
 import type { Messages } from "@/lib/i18n";
-import { register_validation_password_min } from "@/paraglide/messages";
-import { register_validation_password_mismatch } from "@/paraglide/messages";
-import { reset_password_toast_failed } from "@/paraglide/messages";
-import { reset_password_toast_failed_desc } from "@/paraglide/messages";
-import { reset_password_toast_missing_token } from "@/paraglide/messages";
-import { reset_password_toast_success } from "@/paraglide/messages";
-import { reset_password_toast_success_desc } from "@/paraglide/messages";
+import { m } from "@/paraglide/messages";
 
-type ResetPasswordSchemaMessages = Pick<
-  Messages,
-  "register_validation_password_min" | "register_validation_password_mismatch"
->;
-
-const resetPasswordSchemaMessages = {
-  register_validation_password_min,
-  register_validation_password_mismatch,
-} satisfies ResetPasswordSchemaMessages;
-
-const createResetPasswordSchema = (messages: ResetPasswordSchemaMessages) =>
+const createResetPasswordSchema = (messages: Messages) =>
   z
     .object({
       password: z.string().min(8, messages.register_validation_password_min()),
@@ -51,9 +34,7 @@ export function useResetPasswordForm(options: UseResetPasswordFormOptions) {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const resetPasswordSchema = createResetPasswordSchema(
-    resetPasswordSchemaMessages,
-  );
+  const resetPasswordSchema = createResetPasswordSchema(m);
 
   const form = useForm<ResetPasswordSchema>({
     resolver: standardSchemaResolver(resetPasswordSchema),
@@ -61,7 +42,7 @@ export function useResetPasswordForm(options: UseResetPasswordFormOptions) {
 
   const onSubmit = async (data: ResetPasswordSchema) => {
     if (!token) {
-      toast.error(reset_password_toast_missing_token());
+      toast.error(m.reset_password_toast_missing_token());
       return;
     }
 
@@ -71,20 +52,18 @@ export function useResetPasswordForm(options: UseResetPasswordFormOptions) {
     });
 
     if (error) {
-      toast.error(reset_password_toast_failed(), {
+      toast.error(m.reset_password_toast_failed(), {
         description:
-          getResetPasswordAuthErrorMessage(
-            error,
-            resetPasswordAuthErrorMessages,
-          ) ?? reset_password_toast_failed_desc(),
+          getResetPasswordAuthErrorMessage(error, m) ??
+          m.reset_password_toast_failed_desc(),
       });
       return;
     }
 
     queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
-    toast.success(reset_password_toast_success(), {
-      description: reset_password_toast_success_desc(),
+    toast.success(m.reset_password_toast_success(), {
+      description: m.reset_password_toast_success_desc(),
     });
     navigate({ to: "/login" });
   };

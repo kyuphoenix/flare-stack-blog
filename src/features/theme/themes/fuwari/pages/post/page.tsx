@@ -53,7 +53,6 @@ export function PostPage({ post }: PostPageProps) {
             <Link
               to="/admin/posts/edit/$id"
               params={{ id: String(post.id) }}
-              preload={false}
               className="flex flex-row items-center fuwari-text-30 hover:fuwari-text-90 transition animate-in fade-in duration-500"
             >
               <div className="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 fuwari-text-50 flex items-center justify-center mr-2">

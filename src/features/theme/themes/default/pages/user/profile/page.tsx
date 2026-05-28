@@ -259,7 +259,6 @@ export function ProfilePage({
           {user.role === "admin" && (
             <Link
               to="/admin"
-              preload={false}
               className="font-mono text-xs text-foreground/60 hover:text-foreground transition-colors uppercase tracking-wider flex items-center gap-2"
             >
               <span>[ {m.profile_admin_dashboard()} ]</span>

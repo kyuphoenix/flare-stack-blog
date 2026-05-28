@@ -23,7 +23,7 @@ export function RelatedPosts({ slug }: RelatedPostsProps) {
   return (
     <section className="space-y-8 animate-in fade-in duration-500 delay-300 fill-mode-both">
       <div className="flex items-center gap-2 text-muted-foreground/60 font-medium text-xs uppercase tracking-widest">
-        <span className="opacity-50">{"///"}</span>
+        <span className="opacity-50">///</span>
         <span>{m.post_related_posts()}</span>
       </div>
 
@@ -67,7 +67,7 @@ export function RelatedPostsSkeleton() {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-2 text-muted-foreground/60 font-medium text-xs uppercase tracking-widest">
-        <span className="opacity-50">{"///"}</span>
+        <span className="opacity-50">///</span>
         <Skeleton className="h-3 w-16" />
       </div>
 
