@@ -40,7 +40,6 @@ export function PostPage({ post }: PostPageProps) {
           <Link
             to="/admin/posts/edit/$id"
             params={{ id: String(post.id) }}
-            preload={false}
             className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
           >
             <Pencil size={12} />
