@@ -191,7 +191,6 @@ Please refer to the **[Flare Stack Blog Deployment Guide](./deployment-guide.en.
 | `BUCKET_NAME`                | CI/CD   | R2 Bucket Name                                                       |
 | `BETTER_AUTH_SECRET`         | Runtime | Session encryption key. Generate using `openssl rand -hex 32`        |
 | `BETTER_AUTH_URL`            | Runtime | Application URL (e.g., `https://blog.example.com`)                   |
-| `AUTH_TRUSTED_ORIGINS`       | Runtime | Optional comma/whitespace separated origins or hosts for multi-domain login |
 | `ADMIN_EMAIL`                | Runtime | Administrator's email address                                        |
 | `GITHUB_CLIENT_ID`           | Runtime | GitHub OAuth Client ID                                               |
 | `GITHUB_CLIENT_SECRET`       | Runtime | GitHub OAuth Client Secret                                           |
@@ -209,7 +208,6 @@ Please refer to the **[Flare Stack Blog Deployment Guide](./deployment-guide.en.
 | `GITHUB_TOKEN`            | Runtime    | GitHub API Token (for version updates checking to avoid rate limits).                                    |
 | `LOCALE`                  | Runtime    | Default language: `zh` or `en`. Default: `zh`. Used for emails, webhooks, and background task messaging. |
 | `CDN_DOMAIN`              | Runtime    | Standalone CDN domain (e.g., `cdn.example.com`), preferentially used during purge.                       |
-| `VITE_AUTH_TRUSTED_ORIGINS` | Build-time | Optional trusted redirect origins for multi-domain login. Usually same as `AUTH_TRUSTED_ORIGINS`.        |
 | `PAGEVIEW_SALT`           | Runtime    | Salt for anonymizing pageview visitor hashes. Generate with `openssl rand -hex 16`.                      |
 | `UMAMI_SRC`               | Runtime    | Umami client-side tracking proxy URL (e.g., `https://cloud.umami.is`).                                   |
 | `VITE_UMAMI_WEBSITE_ID`   | Build-time | Umami Website ID (client-side tracking).                                                                 |

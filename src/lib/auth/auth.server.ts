@@ -5,10 +5,6 @@ import { betterAuth } from "better-auth/minimal";
 import { renderToStaticMarkup } from "react-dom/server";
 import { AuthEmail } from "@/features/email/templates/AuthEmail";
 import { createAuthConfig } from "@/lib/auth/auth.config";
-import {
-  getAuthAllowedHosts,
-  getAuthTrustedOrigins,
-} from "@/lib/auth/trusted-origins";
 import * as authSchema from "@/lib/db/schema/auth.table";
 import { serverEnv } from "@/lib/env/server.env";
 import type { Locale } from "@/lib/i18n";
@@ -34,16 +30,11 @@ export function getAuth({ db, env }: { db: DB; env: Env }) {
   const {
     BETTER_AUTH_SECRET,
     BETTER_AUTH_URL,
-    AUTH_TRUSTED_ORIGINS,
     ADMIN_EMAIL,
     LOCALE,
     GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET,
   } = serverEnv(env);
-  const trustedOrigins = getAuthTrustedOrigins(
-    BETTER_AUTH_URL,
-    AUTH_TRUSTED_ORIGINS,
-  );
 
   // 固定 10 个 DO 实例池，随机选择避免冷启动
   const PASSWORD_HASHER_POOL_SIZE = 10;
@@ -161,12 +152,7 @@ export function getAuth({ db, env }: { db: DB; env: Env }) {
       },
     },
     secret: BETTER_AUTH_SECRET,
-    baseURL: {
-      allowedHosts: getAuthAllowedHosts(BETTER_AUTH_URL, AUTH_TRUSTED_ORIGINS),
-      fallback: BETTER_AUTH_URL,
-      protocol: "auto",
-    },
-    trustedOrigins,
+    baseURL: BETTER_AUTH_URL,
   });
 }
 
