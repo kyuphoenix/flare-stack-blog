@@ -4,11 +4,25 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { authClient } from "@/lib/auth/auth.client";
+import { sharedAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getForgotPasswordAuthErrorMessage } from "@/lib/auth/auth-errors";
 import type { Messages } from "@/lib/i18n";
-import { m } from "@/paraglide/messages";
+import { auth_error_default_desc } from "@/paraglide/messages";
+import { forgot_password_toast_failed } from "@/paraglide/messages";
+import { forgot_password_toast_sent } from "@/paraglide/messages";
+import { forgot_password_toast_sent_desc } from "@/paraglide/messages";
+import { register_validation_email_invalid } from "@/paraglide/messages";
 
-const createForgotPasswordSchema = (messages: Messages) =>
+type ForgotPasswordSchemaMessages = Pick<
+  Messages,
+  "register_validation_email_invalid"
+>;
+
+const forgotPasswordSchemaMessages = {
+  register_validation_email_invalid,
+} satisfies ForgotPasswordSchemaMessages;
+
+const createForgotPasswordSchema = (messages: ForgotPasswordSchemaMessages) =>
   z.object({
     email: z.email(messages.register_validation_email_invalid()),
   });
@@ -28,7 +42,9 @@ export function useForgotPasswordForm(options: UseForgotPasswordFormOptions) {
 
   const [isSent, setIsSent] = useState(false);
   const [sentEmail, setSentEmail] = useState("");
-  const forgotPasswordSchema = createForgotPasswordSchema(m);
+  const forgotPasswordSchema = createForgotPasswordSchema(
+    forgotPasswordSchemaMessages,
+  );
 
   const form = useForm<ForgotPasswordSchema>({
     resolver: standardSchemaResolver(forgotPasswordSchema),
@@ -46,18 +62,18 @@ export function useForgotPasswordForm(options: UseForgotPasswordFormOptions) {
     resetTurnstile();
 
     if (error) {
-      toast.error(m.forgot_password_toast_failed(), {
+      toast.error(forgot_password_toast_failed(), {
         description:
-          getForgotPasswordAuthErrorMessage(error, m) ??
-          m.auth_error_default_desc(),
+          getForgotPasswordAuthErrorMessage(error, sharedAuthErrorMessages) ??
+          auth_error_default_desc(),
       });
       return;
     }
 
     setSentEmail(data.email);
     setIsSent(true);
-    toast.success(m.forgot_password_toast_sent(), {
-      description: m.forgot_password_toast_sent_desc(),
+    toast.success(forgot_password_toast_sent(), {
+      description: forgot_password_toast_sent_desc(),
     });
   };
 

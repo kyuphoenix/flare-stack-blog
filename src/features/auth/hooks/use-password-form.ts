@@ -3,11 +3,31 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { authClient } from "@/lib/auth/auth.client";
+import { sharedAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getPasswordAuthErrorMessage } from "@/lib/auth/auth-errors";
 import type { Messages } from "@/lib/i18n";
-import { m } from "@/paraglide/messages";
+import { auth_error_default_desc } from "@/paraglide/messages";
+import { profile_toast_password_updated } from "@/paraglide/messages";
+import { profile_toast_security_synced } from "@/paraglide/messages";
+import { profile_toast_update_failed } from "@/paraglide/messages";
+import { profile_validation_current_password_required } from "@/paraglide/messages";
+import { profile_validation_new_password_min } from "@/paraglide/messages";
+import { profile_validation_password_mismatch } from "@/paraglide/messages";
 
-const createPasswordSchema = (messages: Messages) =>
+type PasswordSchemaMessages = Pick<
+  Messages,
+  | "profile_validation_current_password_required"
+  | "profile_validation_new_password_min"
+  | "profile_validation_password_mismatch"
+>;
+
+const passwordSchemaMessages = {
+  profile_validation_current_password_required,
+  profile_validation_new_password_min,
+  profile_validation_password_mismatch,
+} satisfies PasswordSchemaMessages;
+
+const createPasswordSchema = (messages: PasswordSchemaMessages) =>
   z
     .object({
       currentPassword: z
@@ -32,7 +52,9 @@ export function usePasswordForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<PasswordSchema>({
-    resolver: standardSchemaResolver(createPasswordSchema(m)),
+    resolver: standardSchemaResolver(
+      createPasswordSchema(passwordSchemaMessages),
+    ),
   });
 
   const onSubmit = async (data: PasswordSchema) => {
@@ -42,14 +64,15 @@ export function usePasswordForm() {
       revokeOtherSessions: true,
     });
     if (error) {
-      toast.error(m.profile_toast_update_failed(), {
+      toast.error(profile_toast_update_failed(), {
         description:
-          getPasswordAuthErrorMessage(error, m) ?? m.auth_error_default_desc(),
+          getPasswordAuthErrorMessage(error, sharedAuthErrorMessages) ??
+          auth_error_default_desc(),
       });
       return;
     }
-    toast.success(m.profile_toast_password_updated(), {
-      description: m.profile_toast_security_synced(),
+    toast.success(profile_toast_password_updated(), {
+      description: profile_toast_security_synced(),
     });
     reset();
   };

@@ -1,6 +1,7 @@
 import z from "zod";
 
 const clientEnvSchema = z.object({
+  VITE_AUTH_TRUSTED_ORIGINS: z.string().optional(),
   VITE_UMAMI_WEBSITE_ID: z.string().optional(),
   VITE_TURNSTILE_SITE_KEY: z.string().optional(),
 });

@@ -35,7 +35,7 @@ function RouteComponent() {
   } = useTurnstile("login");
 
   const currentSearchParams = new URLSearchParams(
-    new URL(location.href, window.location.origin).search,
+    new URL(location.href, "http://localhost").search,
   );
   const isOAuthAuthorizationRequest =
     !!currentSearchParams.get("client_id") &&
