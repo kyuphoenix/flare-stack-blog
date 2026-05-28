@@ -195,7 +195,6 @@ Flare Stack Blog 的所有面向用户的页面与布局均通过 **主题契约
 | `BUCKET_NAME`                | CI/CD  | R2 存储桶名称                                     |
 | `BETTER_AUTH_SECRET`         | 运行时 | 会话加密密钥，运行 `openssl rand -hex 32` 生成    |
 | `BETTER_AUTH_URL`            | 运行时 | 应用 URL（如 `https://blog.example.com`）         |
-| `AUTH_TRUSTED_ORIGINS`       | 运行时 | 可选，多域名登录可信来源/Host，支持逗号或空白分隔 |
 | `ADMIN_EMAIL`                | 运行时 | 管理员邮箱                                        |
 | `GITHUB_CLIENT_ID`           | 运行时 | GitHub OAuth Client ID                            |
 | `GITHUB_CLIENT_SECRET`       | 运行时 | GitHub OAuth Client Secret                        |
@@ -209,7 +208,6 @@ Flare Stack Blog 的所有面向用户的页面与布局均通过 **主题契约
 | :------------------------ | :----- | :-------------------------------------------------------------------------------------------------------- |
 | `THEME`                   | 构建时 | 主题名称，默认 `default`，详见 [可用主题](#可用主题)                                                      |
 | `TURNSTILE_SECRET_KEY`    | 运行时 | Cloudflare Turnstile 人机验证 Secret Key                                                                  |
-| `VITE_AUTH_TRUSTED_ORIGINS` | 构建时 | 可选，多域名登录前端可信回跳来源，通常与 `AUTH_TRUSTED_ORIGINS` 一致                                    |
 | `VITE_TURNSTILE_SITE_KEY` | 构建时 | Cloudflare Turnstile Site Key                                                                             |
 | `GITHUB_TOKEN`            | 运行时 | GitHub API Token（版本更新检查，避免限流）                                                                |
 | `LOCALE`                  | 运行时 | 默认语言，支持 `zh` / `en`，默认 `zh`；通知邮件、Webhook 文本和后台异步任务文案会使用该语言               |
