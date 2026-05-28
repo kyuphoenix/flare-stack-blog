@@ -1,4 +1,15 @@
-const REDIRECT_URL_ALLOW_LIST: Array<string> = [];
+import {
+  getAuthTrustedOrigins,
+  isTrustedOrigin,
+} from "@/lib/auth/trusted-origins";
+import { clientEnv } from "@/lib/env/client.env";
+
+function getTrustedRedirectOrigins() {
+  return getAuthTrustedOrigins(
+    window.location.origin,
+    clientEnv().VITE_AUTH_TRUSTED_ORIGINS,
+  );
+}
 
 export function normalizeRedirectUrl(
   redirectTo: string | undefined,
@@ -13,15 +24,16 @@ export function normalizeRedirectUrl(
   try {
     const normalizedUrl = new URL(redirectTo, window.location.origin);
     const isSameOrigin = normalizedUrl.origin === window.location.origin;
-    const isAllowedExternalHostname = REDIRECT_URL_ALLOW_LIST.includes(
-      normalizedUrl.hostname,
+    const isAllowedExternalOrigin = isTrustedOrigin(
+      normalizedUrl.origin,
+      getTrustedRedirectOrigins(),
     );
 
-    if (!isSameOrigin && !isAllowedExternalHostname) {
+    if (!isSameOrigin && !isAllowedExternalOrigin) {
       return safeFallback;
     }
 
-    if (normalizedUrl.pathname.startsWith("/api/")) {
+    if (isSameOrigin && normalizedUrl.pathname.startsWith("/api/")) {
       return `${normalizedUrl.pathname}${normalizedUrl.search}${normalizedUrl.hash}`;
     }
 

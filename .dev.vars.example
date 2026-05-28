@@ -8,6 +8,9 @@ ENVIRONMENT=dev
 # --- 认证配置（Better Auth） ---
 BETTER_AUTH_SECRET=your-secret-key-run-openssl-rand-hex-32
 BETTER_AUTH_URL=http://localhost:3000
+# Optional: comma or whitespace separated trusted origins/hosts for multi-domain login.
+# Examples: https://blog.example.com,https://www.example.com,*.pages.dev
+# AUTH_TRUSTED_ORIGINS=
 ADMIN_EMAIL=your-email@example.com
 
 # --- GitHub OAuth ---

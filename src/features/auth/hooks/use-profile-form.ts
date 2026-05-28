@@ -3,11 +3,31 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { authClient } from "@/lib/auth/auth.client";
+import { sharedAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getProfileAuthErrorMessage } from "@/lib/auth/auth-errors";
 import type { Messages } from "@/lib/i18n";
-import { m } from "@/paraglide/messages";
+import { auth_error_default_desc } from "@/paraglide/messages";
+import { profile_toast_name_changed } from "@/paraglide/messages";
+import { profile_toast_profile_updated } from "@/paraglide/messages";
+import { profile_toast_update_failed } from "@/paraglide/messages";
+import { profile_validation_avatar_invalid } from "@/paraglide/messages";
+import { profile_validation_name_max } from "@/paraglide/messages";
+import { profile_validation_name_min } from "@/paraglide/messages";
 
-const createProfileSchema = (messages: Messages) =>
+type ProfileSchemaMessages = Pick<
+  Messages,
+  | "profile_validation_avatar_invalid"
+  | "profile_validation_name_max"
+  | "profile_validation_name_min"
+>;
+
+const profileSchemaMessages = {
+  profile_validation_avatar_invalid,
+  profile_validation_name_max,
+  profile_validation_name_min,
+} satisfies ProfileSchemaMessages;
+
+const createProfileSchema = (messages: ProfileSchemaMessages) =>
   z.object({
     name: z
       .string()
@@ -35,7 +55,9 @@ export function useProfileForm(options: UseProfileFormOptions) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ProfileSchema>({
-    resolver: standardSchemaResolver(createProfileSchema(m)),
+    resolver: standardSchemaResolver(
+      createProfileSchema(profileSchemaMessages),
+    ),
     values: {
       name: user?.name || "",
       image: user?.image || "",
@@ -48,14 +70,15 @@ export function useProfileForm(options: UseProfileFormOptions) {
       image: data.image,
     });
     if (error) {
-      toast.error(m.profile_toast_update_failed(), {
+      toast.error(profile_toast_update_failed(), {
         description:
-          getProfileAuthErrorMessage(error, m) ?? m.auth_error_default_desc(),
+          getProfileAuthErrorMessage(error, sharedAuthErrorMessages) ??
+          auth_error_default_desc(),
       });
       return;
     }
-    toast.success(m.profile_toast_profile_updated(), {
-      description: m.profile_toast_name_changed({ name: data.name }),
+    toast.success(profile_toast_profile_updated(), {
+      description: profile_toast_name_changed({ name: data.name }),
     });
   };
 

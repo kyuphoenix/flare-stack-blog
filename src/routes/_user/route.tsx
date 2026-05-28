@@ -6,9 +6,16 @@ import { toast } from "sonner";
 import { ErrorPage } from "@/components/common/error-page";
 import { AUTH_KEYS, sessionQuery } from "@/features/auth/queries";
 import { authClient } from "@/lib/auth/auth.client";
+import { sharedAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getLogoutAuthErrorMessage } from "@/lib/auth/auth-errors";
 import { CACHE_CONTROL } from "@/lib/constants";
-import { m } from "@/paraglide/messages";
+import { auth_logout_failed } from "@/paraglide/messages";
+import { auth_logout_failed_desc } from "@/paraglide/messages";
+import { auth_logout_success } from "@/paraglide/messages";
+import { auth_logout_success_desc } from "@/paraglide/messages";
+import { nav_friend_links } from "@/paraglide/messages";
+import { nav_home } from "@/paraglide/messages";
+import { nav_posts } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/_user")({
   loader: async ({ context }) => {
@@ -29,10 +36,10 @@ function UserLayout() {
   const queryClient = useQueryClient();
 
   const navOptions = [
-    { label: m.nav_home(), to: "/" as const, id: "home" },
-    { label: m.nav_posts(), to: "/posts" as const, id: "posts" },
+    { label: nav_home(), to: "/" as const, id: "home" },
+    { label: nav_posts(), to: "/posts" as const, id: "posts" },
     {
-      label: m.nav_friend_links(),
+      label: nav_friend_links(),
       to: "/friend-links" as const,
       id: "friend-links",
     },
@@ -41,17 +48,18 @@ function UserLayout() {
   const logout = async () => {
     const { error } = await authClient.signOut();
     if (error) {
-      toast.error(m.auth_logout_failed(), {
+      toast.error(auth_logout_failed(), {
         description:
-          getLogoutAuthErrorMessage(error, m) ?? m.auth_logout_failed_desc(),
+          getLogoutAuthErrorMessage(error, sharedAuthErrorMessages) ??
+          auth_logout_failed_desc(),
       });
       return;
     }
 
     queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
-    toast.success(m.auth_logout_success(), {
-      description: m.auth_logout_success_desc(),
+    toast.success(auth_logout_success(), {
+      description: auth_logout_success_desc(),
     });
   };
 

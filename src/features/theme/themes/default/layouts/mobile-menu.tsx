@@ -100,6 +100,7 @@ export function MobileMenu({
           {user?.role === "admin" && (
             <Link
               to="/admin"
+              preload={false}
               onClick={onClose}
               className={`group flex items-center gap-4 transition-all duration-500 ${
                 isOpen

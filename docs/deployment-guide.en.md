@@ -102,6 +102,7 @@ In your GitHub repository, go to Settings -> Secrets and variables -> Actions, c
 | :--- | :--- |
 | `BETTER_AUTH_SECRET` | Run `openssl rand -hex 32` in your terminal to generate this |
 | `BETTER_AUTH_URL` | Your app URL (e.g., `https://blog.example.com`) |
+| `AUTH_TRUSTED_ORIGINS` | Optional comma/whitespace separated origins or hosts for multi-domain login |
 | `ADMIN_EMAIL` | Admin email address |
 | `GH_CLIENT_ID` | GitHub OAuth Client ID. The workflow maps this to runtime `GITHUB_CLIENT_ID` |
 | `GH_CLIENT_SECRET` | GitHub OAuth Client Secret. The workflow maps this to runtime `GITHUB_CLIENT_SECRET` |
@@ -123,6 +124,7 @@ These variables usually go into the `Variables` tab. They start with `VITE_` and
 | Variable Name | Description |
 | :--- | :--- |
 | `THEME` | Theme name. Defaults to `default` |
+| `VITE_AUTH_TRUSTED_ORIGINS` | Optional trusted redirect origins for multi-domain login. Usually same as `AUTH_TRUSTED_ORIGINS` |
 | `VITE_UMAMI_WEBSITE_ID` | Umami Website ID for client-side tracking (Note: This is set as a Variable, not a Secret) |
 | `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key |
 | `ROUTE` | Set to `1` to let the GitHub Actions workflow switch from `custom_domain` to `routes` mode automatically |

@@ -8,11 +8,39 @@ import { z } from "zod";
 import { AUTH_KEYS } from "@/features/auth/queries";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
+import { sharedAuthErrorMessages } from "@/lib/auth/auth-error-messages";
 import { getRegisterAuthErrorMessage } from "@/lib/auth/auth-errors";
 import type { Messages } from "@/lib/i18n";
-import { m } from "@/paraglide/messages";
+import { register_error_default } from "@/paraglide/messages";
+import { register_toast_activated } from "@/paraglide/messages";
+import { register_toast_created } from "@/paraglide/messages";
+import { register_toast_failed } from "@/paraglide/messages";
+import { register_toast_success } from "@/paraglide/messages";
+import { register_toast_verification_sent } from "@/paraglide/messages";
+import { register_validation_email_invalid } from "@/paraglide/messages";
+import { register_validation_name_max } from "@/paraglide/messages";
+import { register_validation_name_min } from "@/paraglide/messages";
+import { register_validation_password_min } from "@/paraglide/messages";
+import { register_validation_password_mismatch } from "@/paraglide/messages";
 
-const createRegisterSchema = (messages: Messages) =>
+type RegisterSchemaMessages = Pick<
+  Messages,
+  | "register_validation_email_invalid"
+  | "register_validation_name_max"
+  | "register_validation_name_min"
+  | "register_validation_password_min"
+  | "register_validation_password_mismatch"
+>;
+
+const registerSchemaMessages = {
+  register_validation_email_invalid,
+  register_validation_name_max,
+  register_validation_name_min,
+  register_validation_password_min,
+  register_validation_password_mismatch,
+} satisfies RegisterSchemaMessages;
+
+const createRegisterSchema = (messages: RegisterSchemaMessages) =>
   z
     .object({
       name: z
@@ -49,7 +77,7 @@ export function useRegisterForm(options: UseRegisterFormOptions) {
   const navigate = useNavigate();
   const previousLocation = usePreviousLocation();
   const queryClient = useQueryClient();
-  const registerSchema = createRegisterSchema(m);
+  const registerSchema = createRegisterSchema(registerSchemaMessages);
 
   const form = useForm<RegisterSchema>({
     resolver: standardSchemaResolver(registerSchema),
@@ -69,9 +97,10 @@ export function useRegisterForm(options: UseRegisterFormOptions) {
     resetTurnstile();
 
     if (error) {
-      toast.error(m.register_toast_failed(), {
+      toast.error(register_toast_failed(), {
         description:
-          getRegisterAuthErrorMessage(error, m) ?? m.register_error_default(),
+          getRegisterAuthErrorMessage(error, sharedAuthErrorMessages) ??
+          register_error_default(),
       });
       return;
     }
@@ -80,12 +109,12 @@ export function useRegisterForm(options: UseRegisterFormOptions) {
 
     if (isEmailConfigured) {
       setIsSuccess(true);
-      toast.success(m.register_toast_created(), {
-        description: m.register_toast_verification_sent(),
+      toast.success(register_toast_created(), {
+        description: register_toast_verification_sent(),
       });
     } else {
-      toast.success(m.register_toast_success(), {
-        description: m.register_toast_activated(),
+      toast.success(register_toast_success(), {
+        description: register_toast_activated(),
       });
       navigate({ to: previousLocation });
     }

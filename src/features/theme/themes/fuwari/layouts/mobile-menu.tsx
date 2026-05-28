@@ -60,6 +60,7 @@ export function MobileMenu({
             {user?.role === "admin" && (
               <Link
                 to="/admin"
+                preload={false}
                 onClick={onClose}
                 className="flex items-center w-full px-4 py-2.5 text-sm font-medium rounded-lg transition-colors fuwari-text-75 hover:bg-(--fuwari-btn-regular-bg) hover:text-(--fuwari-primary) active:scale-[0.98]"
               >

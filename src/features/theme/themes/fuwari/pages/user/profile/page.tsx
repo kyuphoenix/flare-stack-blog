@@ -248,6 +248,7 @@ export function ProfilePage({
             {user.role === "admin" && (
               <Link
                 to="/admin"
+                preload={false}
                 className="w-full fuwari-btn-regular py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-all"
               >
                 <CodeSquare className="w-4 h-4" />

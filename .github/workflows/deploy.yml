@@ -74,6 +74,7 @@ jobs:
           echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> $GITHUB_ENV
           echo "BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}" >> $GITHUB_ENV
           echo "BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}" >> $GITHUB_ENV
+          echo "AUTH_TRUSTED_ORIGINS=${{ secrets.AUTH_TRUSTED_ORIGINS }}" >> $GITHUB_ENV
           echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> $GITHUB_ENV
           echo "GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> $GITHUB_ENV
           echo "GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> $GITHUB_ENV
@@ -84,6 +85,7 @@ jobs:
           echo "CDN_DOMAIN=${{ secrets.CDN_DOMAIN }}" >> $GITHUB_ENV
           echo "UMAMI_SRC=${{ secrets.UMAMI_SRC }}" >> $GITHUB_ENV
           echo "VITE_UMAMI_WEBSITE_ID=${{ vars.VITE_UMAMI_WEBSITE_ID }}" >> $GITHUB_ENV
+          echo "VITE_AUTH_TRUSTED_ORIGINS=${{ vars.VITE_AUTH_TRUSTED_ORIGINS }}" >> $GITHUB_ENV
           echo "PAGEVIEW_SALT=${{ secrets.PAGEVIEW_SALT }}" >> $GITHUB_ENV
           echo "VITE_TURNSTILE_SITE_KEY=${{ vars.VITE_TURNSTILE_SITE_KEY }}" >> $GITHUB_ENV
           echo "THEME=${{ vars.THEME }}" >> $GITHUB_ENV
@@ -103,6 +105,7 @@ jobs:
           {
             "BETTER_AUTH_SECRET": "$BETTER_AUTH_SECRET",
             "BETTER_AUTH_URL": "$BETTER_AUTH_URL",
+            "AUTH_TRUSTED_ORIGINS": "$AUTH_TRUSTED_ORIGINS",
             "ADMIN_EMAIL": "$ADMIN_EMAIL",
             "GITHUB_CLIENT_ID": "$GITHUB_CLIENT_ID",
             "GITHUB_CLIENT_SECRET": "$GITHUB_CLIENT_SECRET",
@@ -111,6 +114,7 @@ jobs:
             "DOMAIN": "$DOMAIN",
             "CDN_DOMAIN": "$CDN_DOMAIN",
             "VITE_UMAMI_WEBSITE_ID": "$VITE_UMAMI_WEBSITE_ID",
+            "VITE_AUTH_TRUSTED_ORIGINS": "$VITE_AUTH_TRUSTED_ORIGINS",
             "UMAMI_SRC": "$UMAMI_SRC",
             "PAGEVIEW_SALT": "$PAGEVIEW_SALT",
             "TURNSTILE_SECRET_KEY": "$TURNSTILE_SECRET_KEY",

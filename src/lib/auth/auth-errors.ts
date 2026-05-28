@@ -21,6 +21,31 @@ const COMMON_AUTH_ERROR_CODES = [
 
 type CommonAuthErrorCode = (typeof COMMON_AUTH_ERROR_CODES)[number];
 
+type CustomAuthErrorMessages = Pick<
+  Messages,
+  "request_error_rate_limited_desc" | "turnstile_error_failed_desc"
+>;
+
+export type SharedAuthErrorMessages = CustomAuthErrorMessages &
+  Pick<
+    Messages,
+    | "auth_error_credential_not_found"
+    | "auth_error_invalid_password"
+    | "auth_error_invalid_token"
+    | "auth_error_session_expired"
+    | "auth_error_user_already_exists"
+    | "auth_error_user_not_found"
+  >;
+
+export type LoginAuthErrorMessages = SharedAuthErrorMessages &
+  Pick<
+    Messages,
+    "login_error_email_not_verified" | "login_error_invalid_credentials"
+  >;
+
+export type ResetPasswordAuthErrorMessages = SharedAuthErrorMessages &
+  Pick<Messages, "reset_password_toast_failed_desc">;
+
 export interface AuthClientErrorLike {
   code?: string | null;
   retryAfterMs?: number | null;
@@ -44,7 +69,7 @@ function isCommonAuthErrorCode(code: string): code is CommonAuthErrorCode {
 
 function getCustomAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: CustomAuthErrorMessages,
 ): string | undefined {
   const code = getErrorCode(error);
   if (!code || !isCustomAuthErrorCode(code)) return undefined;
@@ -68,7 +93,7 @@ function getCustomAuthErrorMessage(
 
 function getSharedAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
   options?: {
     invalidTokenMessage?: string;
     userNotFoundMessage?: string;
@@ -109,7 +134,7 @@ export function isEmailNotVerifiedError(
 
 export function getLoginAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: LoginAuthErrorMessages,
 ): string | undefined {
   const code = getErrorCode(error);
   switch (code) {
@@ -126,21 +151,21 @@ export function getLoginAuthErrorMessage(
 
 export function getRegisterAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
 
 export function getForgotPasswordAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
 
 export function getResetPasswordAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: ResetPasswordAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages, {
     invalidTokenMessage: messages.reset_password_toast_failed_desc(),
@@ -149,28 +174,28 @@ export function getResetPasswordAuthErrorMessage(
 
 export function getSocialLoginAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
 
 export function getProfileAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
 
 export function getPasswordAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
 
 export function getLogoutAuthErrorMessage(
   error: AuthClientErrorLike | null | undefined,
-  messages: Messages,
+  messages: SharedAuthErrorMessages,
 ): string | undefined {
   return getSharedAuthErrorMessage(error, messages);
 }
