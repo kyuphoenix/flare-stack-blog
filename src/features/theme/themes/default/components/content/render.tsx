@@ -1,5 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
+import { HtmlSnippetFrame } from "@/components/content/html-snippet-frame";
 import { MathFormula } from "@/components/content/math-formula";
 import { extensions } from "@/features/posts/editor/config";
 import { CodeBlock } from "@/features/theme/themes/default/components/content/code-block";
@@ -53,6 +54,20 @@ export function renderReact(content: JSONContent) {
               code={code}
               language={attrs.language || null}
               highlightedHtml={attrs.highlightedHtml}
+            />
+          );
+        },
+        htmlSnippet: ({ node }) => {
+          const attrs = node.attrs as {
+            html?: string;
+            height?: number | string | null;
+          };
+
+          return (
+            <HtmlSnippetFrame
+              html={attrs.html ?? ""}
+              height={attrs.height}
+              className="my-8"
             />
           );
         },

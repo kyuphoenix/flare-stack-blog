@@ -5,6 +5,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Bold,
   Code,
+  CodeXml,
   Heading2,
   Heading3,
   Image as ImageIcon,
@@ -29,6 +30,7 @@ interface EditorToolbarProps {
   editor: Editor | null;
   onLinkClick: () => void;
   onImageClick: () => void;
+  onHtmlSnippetClick: () => void;
   onFormulaInlineClick: () => void;
   onFormulaBlockClick: () => void;
 }
@@ -66,6 +68,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
   editor,
   onLinkClick,
   onImageClick,
+  onHtmlSnippetClick,
   onFormulaInlineClick,
   onFormulaBlockClick,
 }) => {
@@ -80,6 +83,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     isCodeBlock,
     isInlineMath,
     isBlockMath,
+    isHtmlSnippet,
     isBulletList,
     isOrderedList,
     isBlockquote,
@@ -96,12 +100,14 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
           isUnderline: false,
           isStrike: false,
           isCode: false,
+          isCodeBlock: false,
           isBulletList: false,
           isOrderedList: false,
           isBlockquote: false,
           isLink: false,
           isInlineMath: false,
           isBlockMath: false,
+          isHtmlSnippet: false,
         };
       }
       return {
@@ -115,6 +121,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         isCodeBlock: ctx.editor.isActive("codeBlock"),
         isInlineMath: ctx.editor.isActive("inlineMath"),
         isBlockMath: ctx.editor.isActive("blockMath"),
+        isHtmlSnippet: ctx.editor.isActive("htmlSnippet"),
         isBulletList: ctx.editor.isActive("bulletList"),
         isOrderedList: ctx.editor.isActive("orderedList"),
         isBlockquote: ctx.editor.isActive("blockquote"),
@@ -132,6 +139,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     isCodeBlock: false,
     isInlineMath: false,
     isBlockMath: false,
+    isHtmlSnippet: false,
     isBulletList: false,
     isOrderedList: false,
     isBlockquote: false,
@@ -258,6 +266,12 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         isActive={false}
         icon={ImageIcon}
         label={m.editor_toolbar_image()}
+      />
+      <ToolbarButton
+        onClick={onHtmlSnippetClick}
+        isActive={isHtmlSnippet}
+        icon={CodeXml}
+        label={m.editor_toolbar_html_snippet()}
       />
 
       <div className="ml-auto flex gap-1">
