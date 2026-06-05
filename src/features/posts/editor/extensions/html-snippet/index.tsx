@@ -6,6 +6,7 @@ import {
   HtmlSnippetFrame,
   normalizeHtmlSnippetHeight,
 } from "@/components/content/html-snippet-frame";
+import { m } from "@/paraglide/messages";
 
 export interface HtmlSnippetAttributes {
   html: string;
@@ -34,10 +35,10 @@ function HtmlSnippetNodeView({ node, updateAttributes }: NodeViewProps) {
         <div className="flex items-center justify-between border-b border-border/50 bg-background/80 px-4 py-3">
           <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-muted-foreground">
             <CodeXml size={14} />
-            HTML Snippet
+            {m.editor_html_snippet_node_label()}
           </div>
           <label className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground">
-            Height
+            {m.editor_html_snippet_node_height()}
             <input
               type="number"
               min={120}
@@ -63,7 +64,7 @@ function HtmlSnippetNodeView({ node, updateAttributes }: NodeViewProps) {
             }
             spellCheck={false}
             className="min-h-80 resize-y border-0 border-b border-border/50 bg-background px-4 py-3 font-mono text-xs leading-6 text-foreground outline-none placeholder:text-muted-foreground/40 lg:border-r lg:border-b-0"
-            placeholder="<div>Paste your HTML snippet here...</div>"
+            placeholder={m.editor_html_snippet_node_placeholder()}
           />
           <div className="bg-background/60 p-4">
             {html.trim() ? (
@@ -71,14 +72,14 @@ function HtmlSnippetNodeView({ node, updateAttributes }: NodeViewProps) {
                 html={html}
                 height={height}
                 className="bg-background"
-                title="HTML snippet preview"
+                title={m.editor_html_snippet_preview_title()}
               />
             ) : (
               <div
                 className="flex items-center justify-center rounded-sm border border-dashed border-border/60 text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground/60"
                 style={{ height }}
               >
-                Preview
+                {m.editor_html_snippet_preview()}
               </div>
             )}
           </div>

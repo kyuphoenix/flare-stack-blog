@@ -271,7 +271,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         onClick={onHtmlSnippetClick}
         isActive={isHtmlSnippet}
         icon={CodeXml}
-        label="HTML snippet"
+        label={m.editor_toolbar_html_snippet()}
       />
 
       <div className="ml-auto flex gap-1">

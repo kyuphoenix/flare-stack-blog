@@ -4,6 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
+import { m } from "@/paraglide/messages";
 
 interface HtmlSnippetModalProps {
   isOpen: boolean;
@@ -63,10 +64,10 @@ const HtmlSnippetModalInternal: React.FC<HtmlSnippetModalProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="mb-1 font-mono text-xs uppercase leading-none tracking-widest text-muted-foreground">
-                COMMAND
+                {m.editor_html_snippet_command()}
               </span>
               <span className="font-mono text-base font-bold uppercase tracking-wider text-foreground">
-                Insert HTML Snippet
+                {m.editor_html_snippet_title()}
               </span>
             </div>
           </div>
@@ -82,21 +83,21 @@ const HtmlSnippetModalInternal: React.FC<HtmlSnippetModalProps> = ({
         <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto bg-background p-6">
           <div className="space-y-2">
             <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              HTML
+              {m.editor_html_snippet_label()}
             </label>
             <textarea
               autoFocus
               spellCheck={false}
               value={html}
               onChange={(event) => setHtml(event.target.value)}
-              placeholder="<section>...</section>"
+              placeholder={m.editor_html_snippet_placeholder()}
               className="min-h-80 w-full resize-y rounded-none border border-border bg-muted/10 px-4 py-3 font-mono text-xs leading-6 text-foreground outline-none transition-colors placeholder:text-muted-foreground/30 focus:border-foreground"
             />
           </div>
 
           <div className="space-y-2">
             <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Frame height
+              {m.editor_html_snippet_height_label()}
             </label>
             <input
               type="number"
@@ -112,8 +113,7 @@ const HtmlSnippetModalInternal: React.FC<HtmlSnippetModalProps> = ({
           </div>
 
           <p className="border-l border-border/60 pl-4 font-mono text-[11px] leading-5 text-muted-foreground">
-            The snippet is rendered in a sandboxed iframe on public pages.
-            Scripts are intentionally blocked to protect the blog page.
+            {m.editor_html_snippet_security_note()}
           </p>
         </div>
 
@@ -123,7 +123,7 @@ const HtmlSnippetModalInternal: React.FC<HtmlSnippetModalProps> = ({
             onClick={onClose}
             className="flex-1 border-r border-border/50 px-6 py-4 font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:bg-muted/10 hover:text-foreground"
           >
-            [ Cancel ]
+            [ {m.editor_html_snippet_cancel()} ]
           </button>
           <button
             type="button"
@@ -131,7 +131,7 @@ const HtmlSnippetModalInternal: React.FC<HtmlSnippetModalProps> = ({
             disabled={!html.trim()}
             className="flex-1 px-6 py-4 font-mono text-xs font-bold uppercase tracking-widest text-foreground transition-all hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground"
           >
-            [ Insert ]
+            [ {m.editor_html_snippet_insert()} ]
           </button>
         </div>
       </div>
