@@ -11,6 +11,7 @@ import {
 } from "@/components/tiptap-editor/formula-modal-store";
 import { uploadImageFn } from "@/features/media/api/media.api";
 import { CodeBlockExtension } from "@/features/posts/editor/extensions/code-block";
+import { HtmlSnippetExtension } from "@/features/posts/editor/extensions/html-snippet";
 import { ImageExtension } from "@/features/posts/editor/extensions/images";
 import { TableBlockExtension } from "@/features/posts/editor/extensions/table";
 import { BlockQuoteExtension } from "@/features/posts/editor/extensions/typography/block-quote";
@@ -100,6 +101,7 @@ export const extensions = [
   }),
   BlockQuoteExtension,
   CodeBlockExtension,
+  HtmlSnippetExtension,
   Mathematics.configure({
     katexOptions: { throwOnError: false },
     inlineOptions: {

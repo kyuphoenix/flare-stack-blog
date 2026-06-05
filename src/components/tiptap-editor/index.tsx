@@ -16,6 +16,7 @@ import {
 import EditorToolbar from "./ui/editor-toolbar";
 import type { FormulaMode } from "./ui/formula-modal";
 import { FormulaModal } from "./ui/formula-modal";
+import { HtmlSnippetModal } from "./ui/html-snippet-modal";
 import type { ModalType } from "./ui/insert-modal";
 import InsertModal from "./ui/insert-modal";
 import { TableBubbleMenu } from "./ui/table-bubble-menu";
@@ -42,6 +43,7 @@ export const Editor = memo(function Editor({
   const formulaOpenerKeyRef = useRef(Symbol("formula-modal-opener"));
   const [modalOpen, setModalOpen] = useState<ModalType>(null);
   const [modalInitialUrl, setModalInitialUrl] = useState("");
+  const [htmlSnippetModalOpen, setHtmlSnippetModalOpen] = useState(false);
   const [formulaModalOpen, setFormulaModalOpen] = useState(false);
   const [formulaPayload, setFormulaPayload] = useState<{
     mode: FormulaMode;
@@ -80,6 +82,10 @@ export const Editor = memo(function Editor({
   const openImageModal = useCallback(() => {
     setModalInitialUrl("");
     setModalOpen("IMAGE");
+  }, []);
+
+  const openHtmlSnippetModal = useCallback(() => {
+    setHtmlSnippetModalOpen(true);
   }, []);
 
   const openFormulaModal = useCallback((mode: FormulaMode) => {
@@ -180,6 +186,18 @@ export const Editor = memo(function Editor({
     setModalOpen(null);
   };
 
+  const handleHtmlSnippetSubmit = (data: { html: string; height: number }) => {
+    editor
+      ?.chain()
+      .focus()
+      .insertHtmlSnippet({
+        html: data.html,
+        height: data.height,
+      })
+      .run();
+    setHtmlSnippetModalOpen(false);
+  };
+
   return (
     <div className={cn("relative flex flex-col group", className)}>
       {editable && (
@@ -187,6 +205,7 @@ export const Editor = memo(function Editor({
           editor={editor}
           onLinkClick={openLinkModal}
           onImageClick={openImageModal}
+          onHtmlSnippetClick={openHtmlSnippetModal}
           onFormulaInlineClick={() => openFormulaModal("inline")}
           onFormulaBlockClick={() => openFormulaModal("block")}
         />
@@ -208,6 +227,14 @@ export const Editor = memo(function Editor({
           initialUrl={modalInitialUrl}
           onClose={() => setModalOpen(null)}
           onSubmit={handleModalSubmit}
+        />
+      )}
+
+      {editable && (
+        <HtmlSnippetModal
+          isOpen={htmlSnippetModalOpen}
+          onClose={() => setHtmlSnippetModalOpen(false)}
+          onSubmit={handleHtmlSnippetSubmit}
         />
       )}
 

@@ -78,6 +78,13 @@ export async function highlightCodeBlocks(
 export function convertToPlainText(doc: JSONContent | null): string {
   if (!doc) return "";
   const textParts: Array<string> = [];
+  const htmlToText = (html: string) =>
+    html
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, " ")
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
   function traverse(node: JSONContent) {
     // 1. 处理普通文本 (包含 Bold, Italic, Link, Code, Strike 等所有 Inline 样式)
@@ -88,6 +95,12 @@ export function convertToPlainText(doc: JSONContent | null): string {
     else if (node.type === "image" && node.attrs?.alt) {
       // 给图片文本加个空格，防止和前后文粘连
       textParts.push(` ${node.attrs.alt} `);
+    } else if (
+      node.type === "htmlSnippet" &&
+      typeof node.attrs?.html === "string"
+    ) {
+      const snippetText = htmlToText(node.attrs.html);
+      if (snippetText) textParts.push(snippetText);
     }
 
     // 3. 递归遍历子节点 (处理 Heading, Blockquote, List 等容器)
@@ -105,6 +118,7 @@ export function convertToPlainText(doc: JSONContent | null): string {
       "listItem", // 列表项 (li)
       "bulletList", // ul
       "orderedList", // ol
+      "htmlSnippet",
     ].includes(node.type || "");
 
     if (isBlock) {
