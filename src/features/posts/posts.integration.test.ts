@@ -593,12 +593,18 @@ describe("Posts Integration", () => {
         },
       });
 
-      await PostService.startPostProcessWorkflow(adminContext, {
+      const result = await PostService.startPostProcessWorkflow(adminContext, {
         id,
         status: "published",
         clientToday: new Date().toISOString().slice(0, 10),
       });
 
+      expect(result).toEqual({
+        success: true,
+        workflowQueued: true,
+        isFuturePost: false,
+        publishedAt: expect.any(String),
+      });
       expect(
         adminContext.env.POST_PROCESS_WORKFLOW.create,
       ).toHaveBeenCalledWith({
@@ -609,6 +615,55 @@ describe("Posts Integration", () => {
           isFuturePost: false,
         },
       });
+    });
+
+    it("should not wait for scheduled workflow cleanup after queueing an immediate publish", async () => {
+      const { id } = await PostService.createEmptyPost(adminContext);
+      await updatePost({
+        id,
+        data: {
+          title: "Cleanup Delay",
+          slug: "cleanup-delay",
+          status: "published",
+          publishedAt: new Date(),
+        },
+      });
+
+      let releaseCleanup: () => void = () => {};
+      const slowCleanup = new Promise<void>((resolve) => {
+        releaseCleanup = resolve;
+      });
+
+      vi.mocked(adminContext.env.SCHEDULED_PUBLISH_WORKFLOW.get).mockResolvedValue(
+        {
+          id: "post-cleanup-delay-scheduled",
+          terminate: vi.fn(() => slowCleanup),
+        } as unknown as Awaited<
+          ReturnType<Env["SCHEDULED_PUBLISH_WORKFLOW"]["get"]>
+        >,
+      );
+
+      const servicePromise = PostService.startPostProcessWorkflow(
+        adminContext,
+        {
+          id,
+          status: "published",
+          clientToday: new Date().toISOString().slice(0, 10),
+        },
+      );
+
+      const result = await Promise.race([
+        servicePromise.then(() => "resolved" as const),
+        new Promise<"timeout">((resolve) =>
+          setTimeout(() => resolve("timeout"), 50),
+        ),
+      ]);
+
+      releaseCleanup();
+      await servicePromise.catch(() => undefined);
+
+      expect(result).toBe("resolved");
+      expect(adminContext.env.POST_PROCESS_WORKFLOW.create).toHaveBeenCalled();
     });
 
     it("should auto-set publishedAt when publishing for the first time", async () => {
