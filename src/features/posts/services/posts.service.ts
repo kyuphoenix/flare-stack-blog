@@ -44,6 +44,25 @@ function stripPublicContentJson<T extends { publicContentJson?: unknown }>(
   return rest;
 }
 
+async function cleanupScheduledPublishWorkflow(
+  context: BaseContext,
+  scheduledId: string,
+) {
+  try {
+    const oldInstance =
+      await context.env.SCHEDULED_PUBLISH_WORKFLOW.get(scheduledId);
+    await oldInstance.terminate();
+  } catch (error) {
+    console.warn(
+      JSON.stringify({
+        message: "scheduled publish workflow cleanup failed",
+        scheduledId,
+        error: error instanceof Error ? error.message : String(error),
+      }),
+    );
+  }
+}
+
 export async function getPinnedPosts(
   context: DbContext & { executionCtx: ExecutionContext },
 ) {
@@ -402,7 +421,7 @@ export async function previewSummary(
 }
 
 export async function startPostProcessWorkflow(
-  context: DbContext,
+  context: DbContext & { executionCtx: ExecutionContext },
   data: StartPostProcessInput,
 ) {
   let publishedAtISO: string | undefined;
@@ -475,21 +494,25 @@ export async function startPostProcessWorkflow(
 
   // Defensively terminate any existing scheduled publish workflow for this post
   const scheduledId = `post-${data.id}-scheduled`;
-  try {
-    const oldInstance =
-      await context.env.SCHEDULED_PUBLISH_WORKFLOW.get(scheduledId);
-    await oldInstance.terminate();
-  } catch {
-    // Instance doesn't exist or already completed, ignore
-  }
+  const scheduledCleanup = cleanupScheduledPublishWorkflow(context, scheduledId);
 
   // If this is a future post, create a new scheduled publish workflow
   if (data.status === "published" && isFuture) {
+    await scheduledCleanup;
     await context.env.SCHEDULED_PUBLISH_WORKFLOW.createBatch([
       {
         id: scheduledId,
         params: { postId: data.id, publishedAt: publishedAtISO! },
       },
     ]);
+  } else {
+    context.executionCtx.waitUntil(scheduledCleanup);
   }
+
+  return {
+    success: true,
+    workflowQueued: true,
+    isFuturePost: isFuture,
+    publishedAt: publishedAtISO ?? null,
+  };
 }
